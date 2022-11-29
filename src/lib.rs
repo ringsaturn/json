@@ -22,6 +22,8 @@
 #[macro_use]
 extern crate slog;
 
+use chrono::Utc;
+
 use serde::ser::SerializeMap;
 use serde::serde_if_integer128;
 use slog::Key;
@@ -331,15 +333,13 @@ where
     /// * `msg` - msg - formatted logging message
     pub fn add_default_keys(self) -> Self {
         self.add_key_value(o!(
-            "ts" => FnValue(move |_ : &Record| {
-                    time::OffsetDateTime::now_utc()
-                    .format(&time::format_description::well_known::Rfc3339)
-                    .ok()
+            "timestamp" => FnValue(move |_ : &Record| {
+                Utc::now().timestamp()
             }),
             "level" => FnValue(move |rinfo : &Record| {
-                rinfo.level().as_short_str()
+                rinfo.level().as_short_str().to_lowercase()
             }),
-            "msg" => PushFnValue(move |record : &Record, ser| {
+            "content" => PushFnValue(move |record : &Record, ser| {
                 ser.emit(record.msg())
             }),
         ))

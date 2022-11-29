@@ -30,6 +30,7 @@ serde_json = "1"
 serde = "1"
 erased-serde = {version = "0.3", optional = true }
 time = { version = "0.3.6", features = ["formatting"] }
+chrono = "0.4.23"
 
 [dev-dependencies]
 slog-async = "2"
